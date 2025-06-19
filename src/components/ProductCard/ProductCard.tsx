@@ -54,7 +54,7 @@ const ProductCard = ({
       ref={ref}
       className={`${
         inBasket && "opacity-0"
-      } border border-neutral-50 rounded-xl p-4 w-auto h-full shadow-2xl flex flex-col`}
+      }   rounded-xl min-w-84  border-2 p-4 h-96 shadow-2xl flex flex-col`}
     >
       <div className="img-container flex-1 relative overflow-hidden rounded-2xl">
         {discount && (
