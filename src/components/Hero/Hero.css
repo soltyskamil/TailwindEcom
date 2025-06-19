@@ -1,0 +1,16 @@
+@media (max-width: 1024px) {
+  .carousel-slider {
+    height: 100%;
+  }
+  .slider-wrapper {
+    height: 100% !important;
+  }
+
+  .slider-wrapper ul {
+    height: 100% !important;
+  }
+
+  .slider-wrapper ul li img {
+    height: 100% !important;
+  }
+}
