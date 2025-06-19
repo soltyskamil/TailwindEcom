@@ -21,12 +21,20 @@ const ProductsList = () => {
   const productsContainer = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const controls = useAnimation();
+  const [isMobile, setIsMobile] = useState();
 
   useEffect(() => {
     if (!carouselRef.current) return;
     const scrollableWidth =
       carouselRef.current.scrollWidth - carouselRef.current.offsetWidth;
+    window.addEventListener("resize", () => {
+      console.log(window.innerWidth);
+
+      // setWidth(scrollableWidth);
+    });
     setWidth(scrollableWidth);
+
+    window.removeEventListener("resize", () => null);
   }, []);
 
   const handleNextChunk = () => {
@@ -99,7 +107,7 @@ const ProductsList = () => {
   };
 
   return (
-    <div className="products-wrapper  relative p-20">
+    <div className="products-wrapper  relative p-20 max-[1024px]:p-8">
       <button
         onClick={handlePreviousChunk}
         className="border p-4 absolute top-1/2 left-2"
@@ -121,7 +129,7 @@ const ProductsList = () => {
           animate={controls}
           id="products"
           ref={productsContainer}
-          className="product-list flex max-[1300px]:grid-cols-3 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1 gap-4  max-[1024px]:p-8"
+          className="product-list flex"
         >
           {products.map((product: any, idx: number) => (
             <ProductCard {...product} key={idx} />
