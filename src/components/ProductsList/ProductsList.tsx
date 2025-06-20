@@ -1,17 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { store } from "../../store/main-store";
 import ProductCard from "../ProductCard/ProductCard";
-import {
-  motion,
-  useMotionValue,
-  useAnimation,
-  type PanInfo,
-  animate,
-  useAnimate,
-} from "framer-motion";
+import { motion, useMotionValue, animate } from "framer-motion";
 
-import { useMeasure, useWindowSize } from "@uidotdev/usehooks";
-import { debounce, repeat } from "lodash";
+import { useWindowSize } from "@uidotdev/usehooks";
+import { chunk, debounce } from "lodash";
 import "./ProductsList.css";
 const ProductsList = () => {
   const { products } = store.getState().productsSliceReducer;
@@ -20,13 +13,36 @@ const ProductsList = () => {
   const carouselRef = useRef<HTMLDivElement>(null);
   const productRef = useRef<HTMLDivElement>(null);
   const size = useWindowSize();
-  // const controls = useAnimation();
+
   const xTranslation = useMotionValue(0);
   const FAST_DURATION = 20;
   const SLOW_DURATION = 75;
   const [duration, setDuration] = useState(FAST_DURATION);
   const [mustFinish, setMustFinish] = useState(false);
   const [rerender, setRerender] = useState(false);
+  const { width } = useWindowSize();
+  const [chunks, setChunks] = useState(4);
+
+  const calculateChunkSize = () => {
+    if (!width) return;
+
+    let chunkSize;
+    if (width <= 540) {
+      chunkSize = 1;
+    }
+    if (width > 540 && width < 840) {
+      chunkSize = 2;
+    }
+    if (width > 840 && width < 1440) {
+      chunkSize = 3;
+    }
+    if (width > 1440) {
+      chunkSize = 4;
+    }
+    console.log(chunkSize);
+
+    return chunkSize;
+  };
 
   const containerRef = useCallback((node: HTMLElement | null) => {
     if (!node) return;
@@ -46,12 +62,9 @@ const ProductsList = () => {
   }, [node]);
 
   useEffect(() => {
+    setChunks(calculateChunkSize() as any);
     setRerender(!rerender);
   }, [size]);
-
-  // useEffect(() => {
-  //   console.log(constraintLeft);
-  // }, [constraintLeft]);
 
   useEffect(() => {
     if (constraintLeft === 0 || constraintLeft == -0) return;
@@ -66,12 +79,10 @@ const ProductsList = () => {
         },
       });
     } else {
-      console.log("else");
       controls = animate(xTranslation, [0, constraintLeft], {
         ease: "linear",
         duration: duration,
         repeat: Infinity,
-        // repeatType: "loop",
       });
     }
 
@@ -86,12 +97,9 @@ const ProductsList = () => {
     <div className="products-wrapper  py-20 max-[1024px]:p-8">
       <div className="carousel-wrapper overflow-hidden" ref={carouselRef}>
         <motion.div
-          // transition={{ repeat: Infinity }}
           drag="x"
           style={{ x: xTranslation }}
-          // animate={{ x: constraintLeft }}
           dragConstraints={{ right: 0, left: constraintLeft }}
-          // style={{ translateX: 0 }}
           id="products"
           ref={containerRef}
           onHoverStart={() => {
@@ -105,7 +113,7 @@ const ProductsList = () => {
           key={JSON.stringify(rerender) + JSON.stringify(size)}
           className="product-list left-0 flex"
         >
-          {[...products, ...products.slice(0, 4)].map(
+          {[...products, ...products.slice(0, chunks)].map(
             (product: any, idx: number) => (
               <ProductCard {...product} key={idx} ref={productRef} />
             )
