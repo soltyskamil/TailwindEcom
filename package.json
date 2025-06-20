@@ -21,6 +21,7 @@
     "@tailwindcss/vite": "^4.1.10",
     "@types/lodash": "^4.17.18",
     "@types/react-slick": "^0.23.13",
+    "@types/swiper": "^6.0.0",
     "@uidotdev/usehooks": "^2.4.1",
     "axios": "^1.10.0",
     "convert-svg-core": "^0.6.4",
@@ -37,8 +38,10 @@
     "react-router-dom": "^7.6.2",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.5",
+    "react-use-measure": "^2.1.7",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
+    "swiper": "^6.8.4",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
