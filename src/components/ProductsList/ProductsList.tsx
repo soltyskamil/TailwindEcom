@@ -29,30 +29,28 @@ const ProductsList = () => {
   }, [size]);
 
   return (
-    <div className="products-wrapper  py-20 max-[1024px]:p-8">
-      <div className="carousel-wrapper overflow-hidden">
+    <div className="products-wrapper h-dvh">
+      <div className="carousel-wrapper overflow-hidden h-full ">
         <motion.div
           drag="x"
           style={{ x: xTranslation }}
           dragConstraints={{ right: 0, left: constraintLeft }}
           id="products"
           ref={containerRef}
-          onHoverStart={() => {
-            setMustFinish(true);
-            setDuration(SLOW_DURATION);
-          }}
-          onHoverEnd={() => {
-            setMustFinish(true);
-            setDuration(FAST_DURATION);
-          }}
           key={JSON.stringify(rerender) + JSON.stringify(size)}
           className="product-list left-0 flex"
         >
-          {[...products, ...products.slice(0, desiredChunk)].map(
-            (product: any, idx: number) => (
-              <ProductCard {...product} key={idx} />
-            )
-          )}
+          {products.length > 0 &&
+            [...products, ...products.slice(0, desiredChunk)].map(
+              (product: any, idx: number) => (
+                <ProductCard
+                  {...product}
+                  setDuration={setDuration}
+                  setMustFinish={setMustFinish}
+                  key={idx}
+                />
+              )
+            )}
         </motion.div>
       </div>
     </div>

@@ -1,11 +1,23 @@
-import React, { use, useEffect, type RefObject } from "react";
-import { useLocation } from "react-router";
+import React, { useRef } from "react";
+import { data, useLocation, useNavigate } from "react-router";
+import {
+  SLOW_DURATION,
+  FAST_DURATION,
+} from "../../hooks/handle-carousel-animation";
+import { motion } from "framer-motion";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StarIcon from "@mui/icons-material/Star";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { useDispatch, useSelector } from "react-redux";
-import { addToBasket, removeFromBasket } from "../../store/products-reducer";
+import { useToast } from "../../hooks/use-toast";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import {
+  addToBasket,
+  changeProductQuantity,
+  removeFromBasket,
+  addToWishlist,
+} from "../../store/products-reducer";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 type ProductCardData = {
   image: string;
@@ -18,8 +30,11 @@ type ProductCardData = {
     count: number;
     rate: number;
   };
+
   id: number;
   ref?: React.Ref<HTMLDivElement>;
+  setMustFinish: (finish: boolean) => void;
+  setDuration: (duration: number) => void;
 };
 
 const ProductCard = ({
@@ -32,50 +47,142 @@ const ProductCard = ({
   id,
   description,
   ref,
+
+  setMustFinish,
+  setDuration,
 }: ProductCardData) => {
   const dispatch = useDispatch();
-  const { basket } = useSelector((state: any) => state.productsSliceReducer);
   const { pathname } = useLocation();
   const inBasket = pathname === "/basket";
+  const productsState = useSelector((state: any) => state.productsSliceReducer);
+  const { addToast } = useToast();
+  const favoriteRef = useRef<HTMLButtonElement | null>(null);
 
-  const handleAddProduct = () => {
-    dispatch(
-      addToBasket({ id, title, price, description, category, image, rating })
-    );
+  const currentProduct = productsState.basket.find(
+    (product: any) => product.id === id
+  );
+
+  const quantity = currentProduct?.quantity;
+
+  const handleAddProduct = (action: "basket" | "wishlist") => {
+    switch (action) {
+      case "basket":
+        dispatch(
+          addToBasket({
+            id,
+            title,
+            price,
+            description,
+            category,
+            image,
+            rating,
+          })
+        );
+        return;
+      case "wishlist":
+        dispatch(
+          addToWishlist({
+            id,
+            title,
+            price,
+            description,
+            category,
+            image,
+            rating,
+          })
+        );
+    }
   };
 
   const handleRemoveProduct = () => {
-    console.log("ee");
     dispatch(removeFromBasket({ id }));
   };
 
+  const handleHover = (duration: number) => {
+    setMustFinish?.(true); // bezpieczne wywołanie
+    setDuration?.(duration);
+  };
+
+  const handleQuantity = (action: "-" | "+") => {
+    if (action === "+") {
+      dispatch(changeProductQuantity({ id: id, quantity: quantity + 1 }));
+    }
+
+    if (action === "-") {
+      dispatch(changeProductQuantity({ id: id, quantity: quantity - 1 }));
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handlePurchase = () => {
+    navigate("/order", {
+      state: { id, title, price, description, category, image, rating },
+    });
+  };
+
   return (
-    <div className="wrapper flex-[0_0_25%] max-[1440px]:flex-[0_0_33.3%] max-[540px]:flex-[0_0_100%]  max-[840px]:flex-[0_0_50%] px-2">
-      <div
+    <div className="wrapper flex-[0_0_25%] max-[1440px]:flex-[0_0_33.3%] max-[540px]:flex-[0_0_100%]  max-[840px]:flex-[0_0_50%] min-h-74 px-2 max-[540px]:px-4">
+      <motion.div
+        onHoverStart={() => {
+          handleHover(SLOW_DURATION);
+          favoriteRef.current?.classList.add(
+            "opacity-100",
+            "pointer-events-auto"
+          );
+        }}
+        onHoverEnd={() => {
+          handleHover(FAST_DURATION);
+          favoriteRef.current?.classList.remove(
+            "opacity-100",
+            "pointer-event-auto"
+          );
+        }}
         ref={ref}
-        className={`${
-          inBasket && "opacity-0"
-        }   rounded-xl  border-2 p-4 h-96  flex flex-col`}
+        className={`
+           rounded-xl relative shadow-2xl hover:shadow-3xl max-[1024px]:my-8 border  ${
+             !inBasket && `my-20`
+           } border-neutral-200 hover:border-neutral-400 transition duration-300 ease-in-out  p-4  max-h-72 max-[320px]:max-h-full h-full flex flex-col`}
       >
-        <div className="img-container flex-1 shrink-0 relative overflow-hidden rounded-2xl">
-          {discount && (
-            <span className="discount z-20 font-bold text-sm absolute left-2 top-2  px-2 bg-black text-white rounded-2xl">
-              {discount + "%"} OFF
+        <div className="img-container flex gap-2 w-full justify-between flex-row-reverse relative  overflow-hidden ">
+          <div className="discount-wrapper flex-1 text-right">
+            {discount && (
+              <span className="discount z-20 h-max font-bold text-sm absolute left-2 top-2  px-2 bg-black text-white rounded-2xl">
+                {discount + "%"} OFF
+              </span>
+            )}
+            <span className="product-title max-w-3/4 text-md text-neutral-800">
+              {title}
             </span>
-          )}
+          </div>
           <img
             src={image}
             alt="product_img"
-            className="rounded-xl w-full shrink-0 transition duration-300 ease-in-out  z-10 max-h-[150px] h-full block object-contain hover:scale-125"
+            draggable="false"
+            className="rounded-xl object-top block z-10  max-w-[100px]   object-contain pointer-none dragga"
           />
         </div>
-        <div className="product-description">
-          <span className="product-title block my-4 min-h-[56px] px-2 text-xl text-neutral-800">
-            {title}
-          </span>
-          <div className="product-description-price flex flex-wrap px-2  justify-between">
+        <div className="product-description mt-auto">
+          {inBasket && (
+            <div className="product-description-quantity ml-auto   w-max  flex">
+              <button
+                onClick={() => handleQuantity("-")}
+                className="cursor-pointer px-4 hover:bg-neutral-50 transition duration-300 ease-in-out"
+              >
+                -
+              </button>
+              <span className="p-2">{quantity}</span>
+              <button
+                onClick={() => handleQuantity("+")}
+                className=" px-4 cursor-pointer  hover:bg-neutral-50 transition duration-300 ease-in-out"
+              >
+                +
+              </button>
+            </div>
+          )}
+          <div className="product-description-price flex flex-wrap px-1  justify-between">
             <span className="font-bold text-3xl max-[350px]:flex max-[350px]:flex-col">
-              {"$" + price.toFixed(1)}
+              ${inBasket ? (price * quantity).toFixed(1) : price.toFixed(1)}
               {discount && (
                 <span className="price-before-discount text-sm font-light line-through ml-1">
                   ${price}
@@ -111,21 +218,27 @@ const ProductCard = ({
           </div>
           {inBasket ? (
             <div className="basket-buttons flex flex-wrap">
-              <button className="cta border flex-1 h-auto cursor-pointer hover:bg-neutral-900 active:bg-neutral-950 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-neutral-800 text-white font-bold">
+              <button
+                onClick={handlePurchase}
+                className="cta border flex-1 h-auto cursor-pointer hover:bg-neutral-900 active:bg-neutral-950 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-neutral-800 text-white font-bold"
+              >
                 <CreditCardIcon fontSize="medium" />
-                Złóż zamówienie
+                Zamów
               </button>
               <button
                 onClick={handleRemoveProduct}
                 className="cta border cursor-pointer flex-1 h-auto hover:bg-red-600 active:bg-red-700 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-red-500 text-white font-bold"
               >
                 <DeleteIcon fontSize="medium" />
-                Usuń z koszyka
+                Usuń
               </button>
             </div>
           ) : (
             <button
-              onClick={handleAddProduct}
+              onClick={() => {
+                handleAddProduct("basket");
+                addToast("DEFAULT", "Dodano przedmiot do koszyka", title);
+              }}
               className="cta border cursor-pointer hover:bg-neutral-900 active:bg-neutral-950 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-neutral-800 text-white font-bold"
             >
               <AddShoppingCartIcon fontSize="medium" />
@@ -133,7 +246,19 @@ const ProductCard = ({
             </button>
           )}
         </div>
-      </div>
+        <button
+          className={`cta-favorite absolute bg-red-500 hover:bg-red-600 cursor-pointer p-1 rounded-md right-5 bottom-30 opacity-0 transition duration-300 ease-in-out
+              ${pathname === "/" ? "block" : "hidden"}
+            `}
+          ref={favoriteRef}
+          onClick={() => handleAddProduct("wishlist")}
+        >
+          <FavoriteBorderOutlinedIcon
+            fontSize="large"
+            className="text-neutral-100  transition duration-300 ease-in-out"
+          />
+        </button>
+      </motion.div>
     </div>
   );
 };

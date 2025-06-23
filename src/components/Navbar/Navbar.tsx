@@ -28,7 +28,7 @@ const ROUTES = [
     icon: <AccountCircleIcon fontSize="large" />,
   },
   {
-    to: "/wishlist",
+    to: "/account/wishlist",
     icon: <FavoriteIcon fontSize="large" />,
   },
   {

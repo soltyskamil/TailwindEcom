@@ -35,13 +35,13 @@ const Basket = () => {
   }, []);
 
   return (
-    <div className="basket p-20 max-[1024px]:p-8">
+    <div className="basket py-20 max-[1024px]:py-8">
       <h3 className="text-4xl">Twój koszyk</h3>
-      <div className="products-wrapper grid grid-cols-2 gap-4 mt-6 max-[1024px]:grid-cols-1 ">
+      <div className="products-wrapper grid grid-cols-4 mt-6  max-[540px]:grid-cols-1 max-[840px]:grid-cols-2 max-[1440px]:grid-cols-3 ">
         {basket.map((product: any, idx: number) => (
           <ProductCard
             {...product}
-            key={product.id}
+            key={idx}
             ref={(product: any) => (productsRefs.current[idx] = product)}
           />
         ))}

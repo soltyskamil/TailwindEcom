@@ -59,7 +59,11 @@ const AccountLoggedOut = () => {
             }}
             onSubmit={(values, { setSubmitting, resetForm }) => {
               setTimeout(() => {
-                addToast("DEFAULT");
+                addToast(
+                  "DEFAULT",
+                  "Pomyslnie zalogowano",
+                  `Witamy ponownie ${values.email}`
+                );
                 handleSignIn(auth, values.email, values.password);
                 resetForm();
                 setSubmitting(false);

@@ -1,0 +1,23 @@
+@keyframes progress {
+  from {
+    width: 5%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.custom-progressbar-indicator {
+  height: 100%;
+  width: 100%;
+}
+.custom-progressbar-indicator::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 5%;
+  animation: progress 5s linear forwards;
+  right: 0;
+  bottom: 0;
+  background-color: #05df72;
+}

@@ -7,6 +7,7 @@ export type Product = {
   description: string;
   category: string;
   image: string;
+  quantity?: number;
   rating: {
     rate: number;
     count: number;
@@ -30,10 +31,35 @@ export const productsSlice = createSlice({
   initialState,
   reducers: {
     setProducts: (state, action) => {
-      state.products = action.payload;
+      const productsWithQuantity = action.payload.map((product: any) => {
+        return { ...product, quantity: 1 };
+      });
+
+      state.products = productsWithQuantity;
     },
     addToBasket: (state, action) => {
-      state.basket = [...state.basket, action.payload];
+      if (state.basket.some((product: any) => product.id === action.payload.id))
+        return;
+      else state.basket = [...state.basket, { ...action.payload, quantity: 1 }];
+    },
+    addToWishlist: (state, action) => {
+      if (
+        state.wishlist.some((product: any) => product.id === action.payload.id)
+      )
+        return;
+      else state.wishlist = [...state.wishlist, { ...action.payload }];
+    },
+
+    changeProductQuantity: (state, action) => {
+      if (action.payload.quantity < 1) return;
+      else {
+        const searchedProduct = state.basket.find(
+          (product: any) => product.id === action.payload.id
+        );
+        if (searchedProduct) {
+          searchedProduct.quantity = action.payload.quantity;
+        }
+      }
     },
     removeFromBasket: (state, action) => {
       const basket = current(state.basket);
@@ -44,7 +70,12 @@ export const productsSlice = createSlice({
     },
   },
 });
-export const { setProducts, addToBasket, removeFromBasket } =
-  productsSlice.actions;
+export const {
+  setProducts,
+  addToBasket,
+  addToWishlist,
+  removeFromBasket,
+  changeProductQuantity,
+} = productsSlice.actions;
 
 export default productsSlice.reducer;

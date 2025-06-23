@@ -4,10 +4,12 @@ import { useGetProducts } from "../../hooks/use-get-products";
 import { useDispatch } from "react-redux";
 import { setProducts } from "../../store/products-reducer";
 import ProductsList from "../../components/ProductsList/ProductsList";
+import { useToast } from "../../hooks/use-toast";
 
 const Home = () => {
   const { handleGetProducts } = useGetProducts();
   const dispatch = useDispatch();
+  const { addToast } = useToast();
 
   useEffect(() => {
     const fetchProducts = async () => {
