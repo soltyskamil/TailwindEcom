@@ -45,6 +45,7 @@ export const useHandleUserSignup = () => {
             login: login,
             name: name,
             surname: surname,
+            password: password,
           });
 
           toast("Użytkownik został zarejestrowany");

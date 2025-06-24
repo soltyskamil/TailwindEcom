@@ -7,6 +7,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { useDispatch } from "react-redux";
 import { setLoggedOut } from "../../store/account-reducer";
 import { toast } from "react-toastify";
+import { useToast } from "../../hooks/use-toast";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { Formik } from "formik";
 type INIT_DATA_PROPS = {
@@ -24,6 +25,7 @@ const INIT_DATA: INIT_DATA_PROPS = {
 
 const Modal = () => {
   const { modal, closeModal } = useContext(ModalContext);
+  const { addToast } = useToast();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const { Icon, title, description, cta, variant, size } = modal;
   const [visible, setVisible] = useState(false);
@@ -77,7 +79,7 @@ const Modal = () => {
 
   const handleLogout = () => {
     dispatch(setLoggedOut(null));
-    toast("Pomyślnie wylogowano!");
+    addToast("DEFAULT", "Wylogowałeś się", "Pomyślnie wylogowano z konta");
   };
 
   switch (variant) {

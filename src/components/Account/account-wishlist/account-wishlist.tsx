@@ -8,7 +8,7 @@ const AccountWishlist = () => {
   return (
     <div className="account-orders p-8 h-full">
       <h3 className="text-2xl font-bold">Twoja lista życzeń</h3>
-      <div className="account-orders-list grid grid-cols-2">
+      <div className="account-orders-list grid grid-cols-2 max-[1024px]:grid-cols-1">
         {wishlist.map((product: any) => (
           <ProductCard {...product} />
         ))}

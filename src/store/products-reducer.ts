@@ -18,12 +18,14 @@ type initialStateProps = {
   products: Product[];
   basket: Product[];
   wishlist: Product[];
+  newArrivals: Product[];
 };
 
 const initialState: initialStateProps = {
   products: [],
   basket: [],
   wishlist: [],
+  newArrivals: [],
 };
 
 export const productsSlice = createSlice({
@@ -49,6 +51,12 @@ export const productsSlice = createSlice({
         return;
       else state.wishlist = [...state.wishlist, { ...action.payload }];
     },
+    setNewArrivals: (state, action) => {
+      const productsWithTag = action.payload.map((product: any) => {
+        return { ...product, new: true };
+      });
+      state.newArrivals = productsWithTag;
+    },
 
     changeProductQuantity: (state, action) => {
       if (action.payload.quantity < 1) return;
@@ -68,6 +76,9 @@ export const productsSlice = createSlice({
       );
       state.basket.splice(searchedProductIndex, 1);
     },
+    clearBasket: (state) => {
+      state.basket = initialState.basket;
+    },
   },
 });
 export const {
@@ -75,7 +86,9 @@ export const {
   addToBasket,
   addToWishlist,
   removeFromBasket,
+  setNewArrivals,
   changeProductQuantity,
+  clearBasket,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;

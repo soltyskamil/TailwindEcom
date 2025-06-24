@@ -43,6 +43,7 @@
     "redux-persist": "^6.0.0",
     "sass": "^1.89.2",
     "swiper": "^6.8.4",
+    "tailwind-variants": "^1.0.0",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {

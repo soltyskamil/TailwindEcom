@@ -29,8 +29,8 @@ const ProductsList = () => {
   }, [size]);
 
   return (
-    <div className="products-wrapper h-dvh">
-      <div className="carousel-wrapper overflow-hidden h-full ">
+    <div className="products-wrapper">
+      <div className="carousel-wrapper overflow-hidden ">
         <motion.div
           drag="x"
           style={{ x: xTranslation }}

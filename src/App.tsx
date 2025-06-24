@@ -19,12 +19,15 @@ import Basket from "./pages/basket/Basket";
 import AccountOrders from "./components/Account/account-orders/account-orders";
 import AccountWishlist from "./components/Account/account-wishlist/account-wishlist";
 import AccountSettings from "./components/Account/account-settings/account-settings";
+import Footer from "./components/Footer/footer";
 import Order from "./pages/order/Order";
+import OrderComplete from "./pages/order-complete/order-complete";
 const Layout = () => {
   return (
     <div className="layout">
       <Navbar />
       <Outlet />
+      <Footer />
       <ToastContainer />
       <Modal />
     </div>
@@ -44,6 +47,10 @@ export const router = createBrowserRouter([
         path: "/account",
         element: <Account />,
         children: [
+          {
+            path: "/account",
+            element: <AccountOrders />,
+          },
           {
             path: "/account/orders",
             element: <AccountOrders />,
@@ -65,6 +72,10 @@ export const router = createBrowserRouter([
       {
         path: "/order",
         element: <Order />,
+      },
+      {
+        path: "/order/complete",
+        element: <OrderComplete />,
       },
     ],
   },

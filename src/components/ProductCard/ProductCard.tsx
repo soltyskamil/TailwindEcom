@@ -53,7 +53,12 @@ const ProductCard = ({
 }: ProductCardData) => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
+  const { loggedIn } = useSelector((state: any) => state.accountSliceReducer);
+  const { status } = loggedIn;
+
+  const inHome = pathname === "/";
   const inBasket = pathname === "/basket";
+  const inSummary = pathname === "/order";
   const productsState = useSelector((state: any) => state.productsSliceReducer);
   const { addToast } = useToast();
   const favoriteRef = useRef<HTMLButtonElement | null>(null);
@@ -80,45 +85,40 @@ const ProductCard = ({
         );
         return;
       case "wishlist":
-        dispatch(
-          addToWishlist({
-            id,
+        if (!status) {
+          addToast(
+            "ERROR",
+            "Zaloguj się",
+            "Aby dodać przedmiot do wishlisty musisz się zalogować",
+            "/account",
+            { close: "Zamknij", success: "Otwórz panel" }
+          );
+        } else {
+          addToast(
+            "DEFAULT",
+            "Dodano przedmiot do listy życzeń",
             title,
-            price,
-            description,
-            category,
-            image,
-            rating,
-          })
-        );
+            "/account/wishlist",
+            { close: "Zamknij", success: "Otwórz wishlistę" }
+          );
+          dispatch(
+            addToWishlist({
+              id,
+              title,
+              price,
+              description,
+              category,
+              image,
+              rating,
+            })
+          );
+        }
     }
-  };
-
-  const handleRemoveProduct = () => {
-    dispatch(removeFromBasket({ id }));
   };
 
   const handleHover = (duration: number) => {
     setMustFinish?.(true); // bezpieczne wywołanie
     setDuration?.(duration);
-  };
-
-  const handleQuantity = (action: "-" | "+") => {
-    if (action === "+") {
-      dispatch(changeProductQuantity({ id: id, quantity: quantity + 1 }));
-    }
-
-    if (action === "-") {
-      dispatch(changeProductQuantity({ id: id, quantity: quantity - 1 }));
-    }
-  };
-
-  const navigate = useNavigate();
-
-  const handlePurchase = () => {
-    navigate("/order", {
-      state: { id, title, price, description, category, image, rating },
-    });
   };
 
   return (
@@ -142,7 +142,9 @@ const ProductCard = ({
         className={`
            rounded-xl relative shadow-2xl hover:shadow-3xl max-[1024px]:my-8 border  ${
              !inBasket && `my-20`
-           } border-neutral-200 hover:border-neutral-400 transition duration-300 ease-in-out  p-4  max-h-72 max-[320px]:max-h-full h-full flex flex-col`}
+           }
+           
+           border-neutral-200 hover:border-neutral-400 transition duration-300 ease-in-out  p-4  max-h-72 max-[320px]:max-h-full h-full flex flex-col`}
       >
         <div className="img-container flex gap-2 w-full justify-between flex-row-reverse relative  overflow-hidden ">
           <div className="discount-wrapper flex-1 text-right">
@@ -163,23 +165,6 @@ const ProductCard = ({
           />
         </div>
         <div className="product-description mt-auto">
-          {inBasket && (
-            <div className="product-description-quantity ml-auto   w-max  flex">
-              <button
-                onClick={() => handleQuantity("-")}
-                className="cursor-pointer px-4 hover:bg-neutral-50 transition duration-300 ease-in-out"
-              >
-                -
-              </button>
-              <span className="p-2">{quantity}</span>
-              <button
-                onClick={() => handleQuantity("+")}
-                className=" px-4 cursor-pointer  hover:bg-neutral-50 transition duration-300 ease-in-out"
-              >
-                +
-              </button>
-            </div>
-          )}
           <div className="product-description-price flex flex-wrap px-1  justify-between">
             <span className="font-bold text-3xl max-[350px]:flex max-[350px]:flex-col">
               ${inBasket ? (price * quantity).toFixed(1) : price.toFixed(1)}
@@ -216,7 +201,25 @@ const ProductCard = ({
               </span>
             </div>
           </div>
-          {inBasket ? (
+          {inHome && (
+            <button
+              onClick={() => {
+                handleAddProduct("basket");
+                addToast(
+                  "DEFAULT",
+                  "Dodano przedmiot do koszyka",
+                  title,
+                  "/basket",
+                  { close: "Zamknij", success: "Otwórz koszyk" }
+                );
+              }}
+              className="cta border cursor-pointer hover:bg-neutral-900 active:bg-neutral-950 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-neutral-800 text-white font-bold"
+            >
+              <AddShoppingCartIcon fontSize="medium" />
+              Dodaj do koszyka
+            </button>
+          )}
+          {/* {inBasket ? (
             <div className="basket-buttons flex flex-wrap">
               <button
                 onClick={handlePurchase}
@@ -244,7 +247,7 @@ const ProductCard = ({
               <AddShoppingCartIcon fontSize="medium" />
               Dodaj do koszyka
             </button>
-          )}
+          )} */}
         </div>
         <button
           className={`cta-favorite absolute bg-red-500 hover:bg-red-600 cursor-pointer p-1 rounded-md right-5 bottom-30 opacity-0 transition duration-300 ease-in-out

@@ -33,7 +33,7 @@ export const useHandleUserSignIn = () => {
         const user = await getDoc(doc(db, "users", userID));
         if (user.exists()) {
           const { name, surname } = user.data();
-          // toast("Użytkownik został zalogowany");
+
           navigate("/");
           const promise = new Promise((resolve, _) => {
             setTimeout(() => {

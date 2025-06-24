@@ -2,7 +2,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50vw;
-  border: 1px solid black;
+  // border: 1px solid black;
   position: relative;
 
   &.active {
@@ -15,7 +15,38 @@
       transform: translate(-50%, -50%);
       left: 50%;
       border-radius: 50vw;
-      background-color: black;
+      // background-color: black;
     }
   }
+}
+
+input[type="radio"] {
+  opacity: 0;
+  top: 6px;
+
+  &:checked ~ .checkmark::after {
+    content: "";
+
+    display: block;
+    width: 20px;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    height: 20px;
+    border-radius: 50vw;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("/src/assets/check.svg");
+  }
+}
+
+.checkmark {
+  position: relative;
+  left: -16px;
+  top: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50vw;
+
+  background-color: #fdfdfd;
 }

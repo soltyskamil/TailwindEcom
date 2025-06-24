@@ -5,9 +5,6 @@ import AccountLoggedOut from "./account-logged-out";
 import AccountSigned from "./account-signed";
 import { useSelector } from "react-redux";
 const Account = () => {
-  // const { loggedIn, login } = useSelector(
-  //   (state: any) => state.accountSliceReducer
-  // );
   const { loggedIn } = useSelector((state: any) => state.accountSliceReducer);
 
   return (
