@@ -10,7 +10,6 @@ type AccountPanelProps = {
   name: string;
 };
 const AccountPanel = ({ name }: AccountPanelProps) => {
-  const dispatch = useDispatch();
   const { setModalData } = useContext(ModalContext);
   const { pathname } = useLocation();
 

@@ -31,11 +31,18 @@ export const accountSlice = createSlice({
       state.loggedIn = { ...initialState.loggedIn };
     },
     setOrders: (state, action) => {
-      const ordersTimeStamp = action.payload.map((product: any) => {
-        return { ...product, timeStamp: new Date().toUTCString() };
-      });
-      console.log(ordersTimeStamp);
-      state.orders = [...state.orders, ...ordersTimeStamp];
+      const { type, payload } = action.payload;
+      switch (type) {
+        case "DEFAULT":
+          console.log("debug");
+          const ordersTimeStamp = payload.map((product: any) => {
+            return { ...product, timeStamp: new Date().toUTCString() };
+          });
+          state.orders = [...state.orders, ...ordersTimeStamp];
+          return;
+        case "RESET":
+          state.orders = initialState.orders;
+      }
     },
   },
 });

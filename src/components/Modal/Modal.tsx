@@ -6,10 +6,13 @@ import InfoOutlineIcon from "@mui/icons-material/InfoOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { useDispatch } from "react-redux";
 import { setLoggedOut } from "../../store/account-reducer";
-import { toast } from "react-toastify";
 import { useToast } from "../../hooks/use-toast";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { Formik } from "formik";
+import { purgeStoredState, PURGE } from "redux-persist";
+import { persistConfig } from "../../store/main-store";
+import { reset } from "../../store/products-reducer";
+import { setOrders } from "../../store/account-reducer";
+
 type INIT_DATA_PROPS = {
   [key: string]: string;
 };
@@ -79,6 +82,14 @@ const Modal = () => {
 
   const handleLogout = () => {
     dispatch(setLoggedOut(null));
+    dispatch(reset());
+    dispatch(setOrders({ type: "RESET" }));
+    // dispatch({
+    //   type: PURGE,
+    //   key: "root",
+    //   result: () => null,
+    // });
+
     addToast("DEFAULT", "Wylogowałeś się", "Pomyślnie wylogowano z konta");
   };
 

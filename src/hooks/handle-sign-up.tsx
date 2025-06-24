@@ -3,12 +3,11 @@
  */
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
-
 import { setDoc, doc } from "firebase/firestore";
 import { db } from "../auth/firebase";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
+import { useToast } from "./use-toast";
 import { setLoggedIn } from "../store/account-reducer";
 export const useHandleUserSignup = () => {
   /**
@@ -19,6 +18,7 @@ export const useHandleUserSignup = () => {
    * @param password[string] - hasło użytkownika
    */
 
+  const { addToast } = useToast();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -46,9 +46,16 @@ export const useHandleUserSignup = () => {
             name: name,
             surname: surname,
             password: password,
+            orders: [],
+            basket: [],
+            wishlist: [],
           });
 
-          toast("Użytkownik został zarejestrowany");
+          addToast(
+            "DEFAULT",
+            "Pomyślnie zarejestrowano",
+            `Witaj ${name}, życzymy miłego korzystania ze sklepu`
+          );
           navigate("/");
           const promise = new Promise((resolve) => {
             setTimeout(() => {
@@ -60,13 +67,12 @@ export const useHandleUserSignup = () => {
           promise.then(() => {
             dispatch(setLoggedIn({ login, name, surname }));
           });
-        } catch (error) {
-          toast("Wystąpił błąd podczas dodawania do bazy danych");
+        } catch (error: any) {
+          addToast("ERROR", "Wystąpił błąd!", error);
         }
       }
     } catch (error: any) {
-      toast(`Wystąpił błąd podczas rejestracji ${error}`);
-      console.error("Wystąpił błąd podczas rejestracji...");
+      addToast("ERROR", "Wystąpił błąd!", error);
     }
   };
 

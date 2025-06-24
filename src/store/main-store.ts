@@ -13,7 +13,7 @@ import { rootReducer } from "./root-reducer";
 import { api } from "../api/api";
 import storage from "redux-persist/lib/storage";
 
-const persistConfig = {
+export const persistConfig = {
   key: "root",
   storage,
   whitelist: ["accountSliceReducer", "productsSliceReducer"],

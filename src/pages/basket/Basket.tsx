@@ -1,19 +1,18 @@
-import React, { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { tv } from "tailwind-variants";
-import ProductCard from "../../components/ProductCard/ProductCard";
-import ProductsList from "../../components/ProductsList/ProductsList";
 import ProductCardBasket from "../../components/basket/basket-product";
-import { setOrders } from "../../store/account-reducer";
 import { useHandleBasketTotal } from "../../hooks/handle-basket-total";
 import { useToast } from "../../hooks/use-toast";
 import { useNavigate } from "react-router";
+import useHandleGetItems from "../../hooks/handle-get-items";
+import { useEffect } from "react";
+import { useState } from "react";
 const Basket = () => {
-  const { basket } = useSelector((state: any) => state.productsSliceReducer);
+  const [basket, setBasket] = useState([]);
   const { totalPrice } = useHandleBasketTotal();
   const { loggedIn } = useSelector((state: any) => state.accountSliceReducer);
   const { status } = loggedIn;
-  const dispatch = useDispatch();
+  const { handleGetItems } = useHandleGetItems();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const details = tv({
@@ -42,6 +41,18 @@ const Basket = () => {
       navigate("/order");
     }
   };
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const items = await handleGetItems("basket");
+      if (items) {
+        setBasket(items);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
   return (
     <div className="basket-wrapper p-20 max-[1024px]:py-8 max-[1024px]:p-8">
       <h3 className="text-5xl">

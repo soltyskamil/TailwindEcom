@@ -32,6 +32,10 @@ export const productsSlice = createSlice({
   name: "products",
   initialState,
   reducers: {
+    reset: (state) => {
+      (state.basket = initialState.basket),
+        (state.wishlist = initialState.wishlist);
+    },
     setProducts: (state, action) => {
       const productsWithQuantity = action.payload.map((product: any) => {
         return { ...product, quantity: 1 };
@@ -89,6 +93,7 @@ export const {
   setNewArrivals,
   changeProductQuantity,
   clearBasket,
+  reset,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;

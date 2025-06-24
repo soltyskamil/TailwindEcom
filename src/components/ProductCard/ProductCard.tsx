@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { data, useLocation, useNavigate } from "react-router";
+import { setOrders } from "../../store/account-reducer";
 import {
   SLOW_DURATION,
   FAST_DURATION,
@@ -19,6 +20,7 @@ import {
   addToWishlist,
 } from "../../store/products-reducer";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import useHandleUpdateItems from "../../hooks/handle-update-items";
 type ProductCardData = {
   image: string;
   discount?: number;
@@ -53,6 +55,7 @@ const ProductCard = ({
 }: ProductCardData) => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
+  const { handleUpdateItems } = useHandleUpdateItems();
   const { loggedIn } = useSelector((state: any) => state.accountSliceReducer);
   const { status } = loggedIn;
 
@@ -62,6 +65,15 @@ const ProductCard = ({
   const productsState = useSelector((state: any) => state.productsSliceReducer);
   const { addToast } = useToast();
   const favoriteRef = useRef<HTMLButtonElement | null>(null);
+  const props = {
+    id,
+    title,
+    price,
+    description,
+    category,
+    image,
+    rating,
+  };
 
   const currentProduct = productsState.basket.find(
     (product: any) => product.id === id
@@ -72,17 +84,11 @@ const ProductCard = ({
   const handleAddProduct = (action: "basket" | "wishlist") => {
     switch (action) {
       case "basket":
-        dispatch(
-          addToBasket({
-            id,
-            title,
-            price,
-            description,
-            category,
-            image,
-            rating,
-          })
-        );
+        handleUpdateItems(action, { ...props });
+        addToast("DEFAULT", "Dodano przedmiot do koszyka", title, "/basket", {
+          close: "Zamknij",
+          success: "Otwórz koszyk",
+        });
         return;
       case "wishlist":
         if (!status) {
@@ -101,17 +107,7 @@ const ProductCard = ({
             "/account/wishlist",
             { close: "Zamknij", success: "Otwórz wishlistę" }
           );
-          dispatch(
-            addToWishlist({
-              id,
-              title,
-              price,
-              description,
-              category,
-              image,
-              rating,
-            })
-          );
+          handleUpdateItems(action, { ...props });
         }
     }
   };
@@ -205,13 +201,6 @@ const ProductCard = ({
             <button
               onClick={() => {
                 handleAddProduct("basket");
-                addToast(
-                  "DEFAULT",
-                  "Dodano przedmiot do koszyka",
-                  title,
-                  "/basket",
-                  { close: "Zamknij", success: "Otwórz koszyk" }
-                );
               }}
               className="cta border cursor-pointer hover:bg-neutral-900 active:bg-neutral-950 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-neutral-800 text-white font-bold"
             >

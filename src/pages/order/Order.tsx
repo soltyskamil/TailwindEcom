@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Formik, Field } from "formik";
 import { useState } from "react";
@@ -14,15 +14,32 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrders } from "../../store/account-reducer";
+import useHandleUpdateItems from "../../hooks/handle-update-items";
+import useHandleGetItems from "../../hooks/handle-get-items";
 const Order = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const items = await handleGetItems("basket");
+      if (items) {
+        setProducts(items);
+      }
+    };
+    fetchItems();
+  }, []);
+
   const dispatch = useDispatch();
-  const { state } = useLocation();
+  const { handleUpdateItems } = useHandleUpdateItems();
+  const { handleGetItems } = useHandleGetItems();
+
   const navigate = useNavigate();
   const { basket } = useSelector((state: any) => state.productsSliceReducer);
 
   const handlePurchase = () => {
-    dispatch(setOrders(basket));
-
+    handleUpdateItems("orders", products);
+    // dispatch(setOrders({ type: "DEFAULT", payload: basket }));
+    navigate("/order/complete");
     dispatch(clearBasket());
   };
 
@@ -244,7 +261,7 @@ const Order = () => {
                   <span className="font-bold text-xl max-[850px]:text-md">
                     Podsumowanie zamówienia
                   </span>
-                  {basket.map((order: any, idx: number) => (
+                  {products.map((order: any, idx: number) => (
                     <div
                       key={idx}
                       className="product-wrapper border bg-white rounded-md border-neutral-300 mt-2 p-4"
