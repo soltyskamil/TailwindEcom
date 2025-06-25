@@ -23,7 +23,10 @@ const useHandleItemQuantity = () => {
   const { status } = loggedIn;
 
   const user = auth.currentUser;
-  const handleItemQuantity = async (operation: "-" | "+") => {
+  const handleItemQuantity = async (
+    operation: "-" | "+",
+    productID: number
+  ) => {
     if (!user || !status) return;
     const UID = user.uid;
 
@@ -35,10 +38,10 @@ const useHandleItemQuantity = () => {
         const { basket } = docSnapshot.data();
 
         const addedQuantity = basket.map((p: any) =>
-          p.id === 3 ? { ...p, quantity: p.quantity + 1 } : { ...p }
+          p.id === productID ? { ...p, quantity: p.quantity + 1 } : { ...p }
         );
         const removedQuantity = basket.map((p: any) =>
-          p.id === 3
+          p.id === productID
             ? { ...p, quantity: p.quantity > 1 ? p.quantity - 1 : p.quantity }
             : { ...p }
         );

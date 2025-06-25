@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  getDocs,
-  collection,
-  getDoc,
-  doc,
-  query,
-  where,
-} from "firebase/firestore";
+import { getDoc, doc, onSnapshot } from "firebase/firestore";
 import { db } from "../auth/firebase";
 import { auth } from "../auth/firebase";
 import { useSelector } from "react-redux";
@@ -30,7 +23,6 @@ const useHandleGetItems = () => {
 
     try {
       const docSnapshot = await getDoc(docRef);
-
       if (docSnapshot.exists()) {
         const userData = docSnapshot.data();
         const arr = userData[field];

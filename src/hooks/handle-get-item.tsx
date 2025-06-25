@@ -38,11 +38,6 @@ export const useHandleGetItem = () => {
       const docSnapshot = await getDoc(docRef);
       if (docSnapshot.exists()) {
         const { basket } = docSnapshot.data();
-        const updatedBasket = basket.map((p: any) =>
-          p.id === 3 ? { ...p, quantity: p.quantity + 1 } : { ...p }
-        );
-
-        console.log(updatedBasket);
       }
     } catch (error) {
       console.error("Pełny błąd:", error);

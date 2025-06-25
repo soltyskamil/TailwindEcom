@@ -20,7 +20,7 @@ type ProductCardData = {
     count: number;
     rate: number;
   };
-
+  quantity?: number;
   id: number;
   ref?: React.Ref<HTMLDivElement>;
 };
@@ -33,6 +33,7 @@ const ProductCardBasket = ({
   rating,
   id,
   ref,
+  quantity,
   price,
 }: ProductCardData) => {
   const dispatch = useDispatch();
@@ -43,18 +44,17 @@ const ProductCardBasket = ({
     (product: any) => product.id === id
   );
 
-  const quantity = currentProduct?.quantity;
   const handleQuantity = (action: "-" | "+") => {
     switch (action) {
       case "-":
-        console.log("dd");
-        handleItemQuantity("-");
+        handleItemQuantity("-", id);
         return;
       case "+":
-        handleItemQuantity("+");
+        handleItemQuantity("+", id);
         return;
     }
   };
+
   const handleRemoveProduct = () => {
     dispatch(removeFromBasket({ id }));
   };
