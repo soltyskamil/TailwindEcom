@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { data, useLocation, useNavigate } from "react-router";
 import { setOrders } from "../../store/account-reducer";
 import {
@@ -21,6 +21,7 @@ import {
 } from "../../store/products-reducer";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useHandleUpdateItems from "../../hooks/handle-update-items";
+import { useHandleGetItem } from "../../hooks/handle-get-item";
 type ProductCardData = {
   image: string;
   discount?: number;
@@ -84,7 +85,7 @@ const ProductCard = ({
   const handleAddProduct = (action: "basket" | "wishlist") => {
     switch (action) {
       case "basket":
-        handleUpdateItems(action, { ...props });
+        handleUpdateItems(action, { ...props, quantity: 1 });
         addToast("DEFAULT", "Dodano przedmiot do koszyka", title, "/basket", {
           close: "Zamknij",
           success: "Otwórz koszyk",
@@ -208,35 +209,6 @@ const ProductCard = ({
               Dodaj do koszyka
             </button>
           )}
-          {/* {inBasket ? (
-            <div className="basket-buttons flex flex-wrap">
-              <button
-                onClick={handlePurchase}
-                className="cta border flex-1 h-auto cursor-pointer hover:bg-neutral-900 active:bg-neutral-950 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-neutral-800 text-white font-bold"
-              >
-                <CreditCardIcon fontSize="medium" />
-                Zamów
-              </button>
-              <button
-                onClick={handleRemoveProduct}
-                className="cta border cursor-pointer flex-1 h-auto hover:bg-red-600 active:bg-red-700 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-red-500 text-white font-bold"
-              >
-                <DeleteIcon fontSize="medium" />
-                Usuń
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => {
-                handleAddProduct("basket");
-                addToast("DEFAULT", "Dodano przedmiot do koszyka", title);
-              }}
-              className="cta border cursor-pointer hover:bg-neutral-900 active:bg-neutral-950 transition duration-300 ease-in-out text-md w-full py-3 flex items-center justify-center gap-2 px-4 mt-4 rounded-md bg-neutral-800 text-white font-bold"
-            >
-              <AddShoppingCartIcon fontSize="medium" />
-              Dodaj do koszyka
-            </button>
-          )} */}
         </div>
         <button
           className={`cta-favorite absolute bg-red-500 hover:bg-red-600 cursor-pointer p-1 rounded-md right-5 bottom-30 opacity-0 transition duration-300 ease-in-out

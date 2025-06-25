@@ -6,8 +6,9 @@ import {
   removeFromBasket,
 } from "../../store/products-reducer";
 import { useSelector } from "react-redux";
-import { useState } from "react";
-import { useHandleBasketTotal } from "../../hooks/handle-basket-total";
+import { useEffect } from "react";
+import { useHandleGetItem } from "../../hooks/handle-get-item";
+import useHandleItemQuantity from "../../hooks/handle-item-quantity";
 type ProductCardData = {
   image: string;
   discount?: number;
@@ -35,6 +36,7 @@ const ProductCardBasket = ({
   price,
 }: ProductCardData) => {
   const dispatch = useDispatch();
+  const { handleItemQuantity } = useHandleItemQuantity();
 
   const productsState = useSelector((state: any) => state.productsSliceReducer);
   const currentProduct = productsState.basket.find(
@@ -43,12 +45,14 @@ const ProductCardBasket = ({
 
   const quantity = currentProduct?.quantity;
   const handleQuantity = (action: "-" | "+") => {
-    if (action === "+") {
-      dispatch(changeProductQuantity({ id: id, quantity: quantity + 1 }));
-    }
-
-    if (action === "-") {
-      dispatch(changeProductQuantity({ id: id, quantity: quantity - 1 }));
+    switch (action) {
+      case "-":
+        console.log("dd");
+        handleItemQuantity("-");
+        return;
+      case "+":
+        handleItemQuantity("+");
+        return;
     }
   };
   const handleRemoveProduct = () => {

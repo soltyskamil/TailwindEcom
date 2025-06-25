@@ -18,9 +18,12 @@ const Home = () => {
     const fetchProducts = async () => {
       try {
         const result = await handleGetProducts();
-        if (result) {
+        if (result && result.data) {
+          const updatedResult = result.data.map((item: any) => {
+            return { ...item, quantity: 1 };
+          });
           dispatch(setNewArrivals(result));
-          dispatch(setProducts(result));
+          dispatch(setProducts(updatedResult));
         }
       } catch (error) {
         console.error("Błąd...", error);

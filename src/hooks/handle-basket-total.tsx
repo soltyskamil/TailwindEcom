@@ -5,8 +5,10 @@ import { useSelector } from "react-redux";
  * Hook that provides total value of basket
  */
 
-export const useHandleBasketTotal = () => {
-  const { basket } = useSelector((state: any) => state.productsSliceReducer);
+/**
+ * @param data passed data that we fetched
+ */
+export const useHandleBasketTotal = (data: any) => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   const handleBasketCalculate = (basket: any) => {
@@ -19,8 +21,8 @@ export const useHandleBasketTotal = () => {
   };
 
   useEffect(() => {
-    setTotalPrice(handleBasketCalculate(basket));
-  }, [basket]);
+    setTotalPrice(handleBasketCalculate(data));
+  }, [data]);
 
   return {
     totalPrice,

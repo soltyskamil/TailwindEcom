@@ -38,7 +38,6 @@ const Order = () => {
 
   const handlePurchase = () => {
     handleUpdateItems("orders", products);
-    // dispatch(setOrders({ type: "DEFAULT", payload: basket }));
     navigate("/order/complete");
     dispatch(clearBasket());
   };

@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 const Basket = () => {
   const [basket, setBasket] = useState([]);
-  const { totalPrice } = useHandleBasketTotal();
+  const { totalPrice } = useHandleBasketTotal(basket);
   const { loggedIn } = useSelector((state: any) => state.accountSliceReducer);
   const { status } = loggedIn;
   const { handleGetItems } = useHandleGetItems();

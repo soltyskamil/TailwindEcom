@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   getDocs,
   collection,
@@ -11,9 +12,9 @@ import { db } from "../auth/firebase";
 import { auth } from "../auth/firebase";
 import { useSelector } from "react-redux";
 /**
- * Hook that provides receiving data from firestore database
+ * Hook that provides fetching single item from firestore
  */
-const useHandleGetItems = () => {
+export const useHandleGetItem = () => {
   /**
    * @param user -> obecnie zalogowany użytkownik którego dane pobieramy z firebase
    * @param field -> pole które mamy pobrać
@@ -23,29 +24,32 @@ const useHandleGetItems = () => {
 
   const user = auth.currentUser;
 
-  const handleGetItems = async (field: "basket" | "wishlist" | "orders") => {
+  const handleGetItem = async () => {
     if (!user || !status) return;
     const UID = user.uid;
-    const docRef = doc(db, "users", UID);
 
     try {
-      const docSnapshot = await getDoc(docRef);
+      console.log(UID);
+      const docRef = doc(db, "users", UID);
 
+      const basketRef = collection(docRef, "basket");
+      const snapshot = await getDocs(basketRef);
+
+      const docSnapshot = await getDoc(docRef);
       if (docSnapshot.exists()) {
-        const userData = docSnapshot.data();
-        const arr = userData[field];
-        return arr;
-      } else {
-        console.error("Nie ma takiego dokumentu..");
+        const { basket } = docSnapshot.data();
+        const updatedBasket = basket.map((p: any) =>
+          p.id === 3 ? { ...p, quantity: p.quantity + 1 } : { ...p }
+        );
+
+        console.log(updatedBasket);
       }
     } catch (error) {
-      console.error("Wystąpił błąd podczas pobierania danych");
+      console.error("Pełny błąd:", error);
     }
   };
 
   return {
-    handleGetItems,
+    handleGetItem,
   };
 };
-
-export default useHandleGetItems;
