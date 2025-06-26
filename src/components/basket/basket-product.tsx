@@ -1,15 +1,12 @@
 import React from "react";
 import { Close } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import {
-  changeProductQuantity,
-  removeFromBasket,
-} from "../../store/products-reducer";
+import { removeFromBasket } from "../../store/products-reducer";
+import { useHandleItemRemove } from "../../hooks/handle-item-remove";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
-import { useHandleGetItem } from "../../hooks/handle-get-item";
+
 import useHandleItemQuantity from "../../hooks/handle-item-quantity";
-type ProductCardData = {
+export type ProductCardData = {
   image: string;
   discount?: number;
   title: string;
@@ -20,7 +17,7 @@ type ProductCardData = {
     count: number;
     rate: number;
   };
-  quantity?: number;
+  quantity: number;
   id: number;
   ref?: React.Ref<HTMLDivElement>;
 };
@@ -38,11 +35,7 @@ const ProductCardBasket = ({
 }: ProductCardData) => {
   const dispatch = useDispatch();
   const { handleItemQuantity } = useHandleItemQuantity();
-
-  const productsState = useSelector((state: any) => state.productsSliceReducer);
-  const currentProduct = productsState.basket.find(
-    (product: any) => product.id === id
-  );
+  const { handleItemRemove } = useHandleItemRemove();
 
   const handleQuantity = (action: "-" | "+") => {
     switch (action) {
@@ -56,7 +49,7 @@ const ProductCardBasket = ({
   };
 
   const handleRemoveProduct = () => {
-    dispatch(removeFromBasket({ id }));
+    handleItemRemove({ field: "basket", id: id });
   };
 
   return (

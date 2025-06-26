@@ -14,8 +14,10 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrders } from "../../store/account-reducer";
+import { format } from "date-fns";
 import useHandleUpdateItems from "../../hooks/handle-update-items";
 import useHandleGetItems from "../../hooks/handle-get-items";
+import type { ProductCardData } from "../../components/basket/basket-product";
 const Order = () => {
   const [products, setProducts] = useState([]);
 
@@ -29,7 +31,6 @@ const Order = () => {
     fetchItems();
   }, []);
 
-  const dispatch = useDispatch();
   const { handleUpdateItems } = useHandleUpdateItems();
   const { handleGetItems } = useHandleGetItems();
 
@@ -37,9 +38,16 @@ const Order = () => {
   const { basket } = useSelector((state: any) => state.productsSliceReducer);
 
   const handlePurchase = () => {
-    handleUpdateItems("orders", products);
-    navigate("/order/complete");
-    dispatch(clearBasket());
+    navigate("/order/complete", {
+      state: products,
+    });
+    handleUpdateItems("basket-clear", null);
+    handleUpdateItems(
+      "orders",
+      products.map((p: ProductCardData) => {
+        return { ...p, timeStamp: format(new Date(), "yyyy-MM-dd HH:mm:ss") };
+      })
+    );
   };
 
   const input = tv({
@@ -88,7 +96,6 @@ const Order = () => {
         }}
         onSubmit={(values) => {
           handlePurchase();
-          navigate("/order/complete");
         }}
       >
         {({

@@ -12,7 +12,7 @@ const useHandleUpdateItems = () => {
   const user = auth.currentUser;
 
   const handleUpdateItems = async (
-    field: "basket" | "wishlist" | "orders",
+    field: "basket" | "wishlist" | "orders" | "basket-clear",
     item: any
   ) => {
     if (!user) return;
@@ -24,6 +24,11 @@ const useHandleUpdateItems = () => {
         case "basket":
           await updateDoc(docRef, {
             basket: arrayUnion(item),
+          });
+          return;
+        case "basket-clear":
+          await updateDoc(docRef, {
+            basket: [],
           });
           return;
         case "wishlist":

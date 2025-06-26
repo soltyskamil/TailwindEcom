@@ -7,9 +7,6 @@ import { useNavigate } from "react-router";
 import useHandleGetItems from "../../hooks/handle-get-items";
 import { useEffect } from "react";
 import { useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "../../auth/firebase";
-import { auth } from "../../auth/firebase";
 import useHandleRealTimeUpdates from "../../hooks/handle-realtime-updates";
 const Basket = () => {
   const [basket, setBasket] = useState([]);

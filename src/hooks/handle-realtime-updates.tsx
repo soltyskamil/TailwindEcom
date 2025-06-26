@@ -10,10 +10,12 @@ import { useSelector } from "react-redux";
  */
 
 type useHandleRealTimeUpdatesProps = {
-  setBasket: Dispatch<SetStateAction<never[]>>;
+  setBasket?: Dispatch<SetStateAction<never[]>>;
+  setWishlist?: Dispatch<SetStateAction<never[]>>;
 };
 const useHandleRealTimeUpdates = ({
   setBasket,
+  setWishlist,
 }: useHandleRealTimeUpdatesProps) => {
   /**
    * @param user -> obecnie zalogowany użytkownik którego dane pobieramy z firebase
@@ -24,17 +26,27 @@ const useHandleRealTimeUpdates = ({
 
   const user = auth.currentUser;
 
-  const handleRealTimeUpdate = (field: "basket") => {
+  const handleRealTimeUpdate = (field: "basket" | "wishlist") => {
     if (!user || !status) return;
     const UID = user.uid;
     const docRef = doc(db, "users", UID);
 
     switch (field) {
       case "basket":
+        if (!setBasket) return;
         onSnapshot(docRef, (docRef) => {
           if (docRef.exists()) {
             const basket = docRef.data().basket;
             setBasket(basket);
+          }
+        });
+        return;
+      case "wishlist":
+        onSnapshot(docRef, (docRef) => {
+          if (!setWishlist) return;
+          if (docRef.exists()) {
+            const wishlist = docRef.data().wishlist;
+            setWishlist(wishlist);
           }
         });
     }
