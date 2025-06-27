@@ -1,13 +1,10 @@
 import React from "react";
-
 import { toast } from "react-toastify";
 import "../App.css";
 import "react-toastify/dist/ReactToastify.css";
 import type ToastContentProps from "react-toastify";
 import CustomProgressBar from "../components/Toasts/CustomProgressBar";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
 export const useToast = () => {
   /**
    * @param toastVariant[string]
@@ -18,8 +15,9 @@ export const useToast = () => {
     title: string,
     description: string,
     link?: string,
+    pathname?: string,
     options?: {
-      [key: string]: string;
+      [key: string]: any;
     }
   ) => {
     switch (toastVariant) {
@@ -41,7 +39,7 @@ export const useToast = () => {
           position: "top-right",
           ariaLabel: "Error",
           autoClose: 5,
-          data: { title, description, options },
+          data: { title, description, options, pathname },
           style: { border: "none", padding: "0px" },
           className: "p-0 w-[400px] border border-purple-600/40",
           customProgressBar: true,
@@ -92,12 +90,7 @@ function CustomToast({ closeToast, isPaused, data }: CustomToastProps) {
     </div>
   );
 }
-function CustomToastError({
-  closeToast,
-  isPaused,
-
-  data,
-}: CustomToastProps) {
+const CustomToastError = ({ closeToast, isPaused, data }: CustomToastProps) => {
   return (
     <div className="success-toast-wrapper flex flex-col w-full ">
       <div className="success-toast border border-red-400 border-b-0 p-0 flex w-full min-h-[68px] rounded-[6px_6px_0px_0px] relative">
@@ -115,6 +108,7 @@ function CustomToastError({
             </button>
             <hr className="text-neutral-300" />
             <Link
+              state={{ from: `${data.pathname}`, to: "/account" }}
               to="/account"
               className="w-full flex items-center justify-center h-full cursor-pointer p-1 gap-0.5 hover:bg-neutral-100 transition duration-300 ease-in-out "
             >
@@ -130,4 +124,4 @@ function CustomToastError({
       />
     </div>
   );
-}
+};

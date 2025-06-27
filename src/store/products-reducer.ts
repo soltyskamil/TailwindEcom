@@ -1,4 +1,5 @@
 import { createSlice, current } from "@reduxjs/toolkit";
+import type { ProductCardData } from "../components/basket/basket-product";
 
 export type Product = {
   id: number;
@@ -63,14 +64,31 @@ export const productsSlice = createSlice({
     },
 
     changeProductQuantity: (state, action) => {
-      if (action.payload.quantity < 1) return;
-      else {
-        const searchedProduct = state.basket.find(
-          (product: any) => product.id === action.payload.id
-        );
-        if (searchedProduct) {
-          searchedProduct.quantity = action.payload.quantity;
-        }
+      const searchedProduct = current(state.basket).find(
+        (product: any) => product.id === action.payload.id
+      );
+      let updatedProduct: ProductCardData;
+      if (!searchedProduct || !searchedProduct.quantity) return;
+      switch (action.payload.operation) {
+        case "+":
+          updatedProduct = {
+            ...searchedProduct,
+            quantity: searchedProduct.quantity + 1,
+          };
+
+          state.basket = state.basket.map((p: any) =>
+            p.id === searchedProduct.id ? { ...updatedProduct } : { ...p }
+          );
+          return;
+        case "-":
+          if (searchedProduct.quantity <= 1) return;
+          updatedProduct = {
+            ...searchedProduct,
+            quantity: searchedProduct.quantity - 1,
+          };
+          state.basket = state.basket.map((p: any) =>
+            p.id === searchedProduct.id ? { ...updatedProduct } : { ...p }
+          );
       }
     },
     removeFromBasket: (state, action) => {
@@ -81,7 +99,6 @@ export const productsSlice = createSlice({
       state.basket.splice(searchedProductIndex, 1);
     },
     clearBasket: (state) => {
-      //Działa ale nie nasłuchuje zmian
       state.basket = initialState.basket;
     },
   },

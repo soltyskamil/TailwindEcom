@@ -49,7 +49,6 @@ const ProductCardBasket = ({
   };
 
   const handleRemoveProduct = () => {
-    dispatch(removeFromBasket({ id }));
     handleItemRemove({ field: "basket", id: id });
   };
 

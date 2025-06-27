@@ -86,10 +86,17 @@ const ProductCard = ({
     switch (action) {
       case "basket":
         handleUpdateItems(action, { ...props, quantity: 1 });
-        addToast("DEFAULT", "Dodano przedmiot do koszyka", title, "/basket", {
-          close: "Zamknij",
-          success: "Otwórz koszyk",
-        });
+        addToast(
+          "DEFAULT",
+          "Dodano przedmiot do koszyka",
+          title,
+          "/basket",
+          undefined,
+          {
+            close: "Zamknij",
+            success: "Otwórz koszyk",
+          }
+        );
         return;
       case "wishlist":
         if (!status) {
@@ -98,6 +105,7 @@ const ProductCard = ({
             "Zaloguj się",
             "Aby dodać przedmiot do wishlisty musisz się zalogować",
             "/account",
+            undefined,
             { close: "Zamknij", success: "Otwórz panel" }
           );
         } else {
@@ -106,6 +114,7 @@ const ProductCard = ({
             "Dodano przedmiot do listy życzeń",
             title,
             "/account/wishlist",
+            undefined,
             { close: "Zamknij", success: "Otwórz wishlistę" }
           );
           handleUpdateItems(action, { ...props });

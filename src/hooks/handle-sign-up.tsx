@@ -9,7 +9,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { useToast } from "./use-toast";
 import { setLoggedIn } from "../store/account-reducer";
-export const useHandleUserSignup = () => {
+type useHandleUserSignup = {
+  pathname?: string;
+};
+
+export const useHandleUserSignup = ({ pathname }: useHandleUserSignup) => {
   /**
    *  @param auth[string] - dla autentykacji apki
    * @param login[string] - login użytkownika
@@ -51,22 +55,20 @@ export const useHandleUserSignup = () => {
             wishlist: [],
           });
 
+          // .then(() => {
+          //   if (pathname) {
+          //     setTimeout(() => {
+          //       navigate(pathname);
+          //     }, 300);
+          //   } else navigate("/");
+          //   dispatch(setLoggedIn({ login, name, surname }));
+          // });
+
           addToast(
             "DEFAULT",
             "Pomyślnie zarejestrowano",
             `Witaj ${name}, życzymy miłego korzystania ze sklepu`
           );
-          navigate("/");
-          const promise = new Promise((resolve) => {
-            setTimeout(() => {
-              resolve("switched");
-            }, 300);
-          });
-
-          //Setting logged state after switching to homepage
-          promise.then(() => {
-            dispatch(setLoggedIn({ login, name, surname }));
-          });
         } catch (error: any) {
           addToast("ERROR", "Wystąpił błąd!", error);
         }

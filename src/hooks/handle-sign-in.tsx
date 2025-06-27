@@ -9,8 +9,15 @@ import { setLoggedIn } from "../store/account-reducer";
 import { useNavigate } from "react-router";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../auth/firebase";
+import { useLocation } from "react-router";
 
-export const useHandleUserSignIn = () => {
+type useHandleUserSignInProps = {
+  pathname?: string;
+};
+
+export const useHandleUserSignIn = ({
+  pathname,
+}: useHandleUserSignInProps = {}) => {
   /**
    *  @param auth[string] - dla autentykacji apki
    * @param login[string] - login użytkownika
@@ -33,8 +40,9 @@ export const useHandleUserSignIn = () => {
         const user = await getDoc(doc(db, "users", userID));
         if (user.exists()) {
           const { name, surname } = user.data();
-
-          navigate("/");
+          if (pathname) {
+            navigate(pathname);
+          } else navigate("/");
           const promise = new Promise((resolve, _) => {
             setTimeout(() => {
               resolve("switched");

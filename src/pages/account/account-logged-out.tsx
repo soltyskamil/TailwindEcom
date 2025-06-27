@@ -6,11 +6,14 @@ import { auth } from "../../auth/firebase";
 import { useHandleUserSignup } from "../../hooks/handle-sign-up";
 import { useHandleUserSignIn } from "../../hooks/handle-sign-in";
 import gsap from "gsap";
+import { useLocation } from "react-router";
 gsap.registerPlugin(gsap);
 
 const AccountLoggedOut = () => {
-  const { handleSignUp } = useHandleUserSignup();
-  const { handleSignIn } = useHandleUserSignIn();
+  const { state } = useLocation();
+  const { from, to } = state || {};
+  const { handleSignUp } = useHandleUserSignup({ pathname: from });
+  const { handleSignIn } = useHandleUserSignIn({ pathname: from });
   const { addToast } = useToast();
 
   const observerRef = useRef<IntersectionObserver | null>(null);

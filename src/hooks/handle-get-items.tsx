@@ -8,7 +8,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../auth/firebase";
 import { auth } from "../auth/firebase";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearBasket } from "../store/products-reducer";
 /**
  *
  *
@@ -21,6 +22,7 @@ const useHandleGetItems = () => {
    */
 
   const { basket } = useSelector((state: any) => state.productsSliceReducer);
+  const dispatch = useDispatch();
   const { loggedIn } = useSelector((state: any) => state.accountSliceReducer);
   const { status } = loggedIn;
 

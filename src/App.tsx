@@ -3,6 +3,7 @@ import Home from "./pages/home/Home";
 import {
   BrowserRouter,
   createBrowserRouter,
+  UNSAFE_createBrowserHistory,
   Outlet,
   Router,
   RouterProvider,

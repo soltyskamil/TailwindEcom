@@ -4,7 +4,7 @@ import { tv } from "tailwind-variants";
 import ProductCardBasket from "../../components/basket/basket-product";
 import { useHandleBasketTotal } from "../../hooks/handle-basket-total";
 import { useToast } from "../../hooks/use-toast";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import useHandleGetItems from "../../hooks/handle-get-items";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -13,12 +13,16 @@ import { SvgEmptyBasketIcon } from "../../components/icon/empty-basket-icon";
 const Basket = () => {
   const [basket, setBasket] = useState([]);
   const { totalPrice } = useHandleBasketTotal(basket);
+  const { basket: basketRedux } = useSelector(
+    (state: any) => state.productsSliceReducer
+  );
   const { loggedIn } = useSelector((state: any) => state.accountSliceReducer);
   const { status } = loggedIn;
   const { handleGetItems } = useHandleGetItems();
   const { handleRealTimeUpdate } = useHandleRealTimeUpdates({
     setBasket,
   });
+  const { pathname } = useLocation();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const details = tv({
@@ -40,6 +44,7 @@ const Basket = () => {
         "Zaloguj się",
         "Aby przeprowadzić proces zamówienia musisz się zalogować.",
         "/account",
+        pathname,
         { close: "Zamknij", success: "Otwórz panel" }
       );
       return;
@@ -49,16 +54,20 @@ const Basket = () => {
   };
 
   useEffect(() => {
-    const fetchItems = async () => {
-      const items = await handleGetItems("basket");
-      if (items) {
-        setBasket(items);
-      }
-    };
+    if (!status) {
+      setBasket(basketRedux);
+    } else {
+      const fetchItems = async () => {
+        const items = await handleGetItems("basket");
+        if (items) {
+          setBasket(items);
+        }
+      };
 
-    handleRealTimeUpdate("basket");
-    fetchItems();
-  }, []);
+      handleRealTimeUpdate("basket");
+      fetchItems();
+    }
+  }, [basketRedux]);
 
   return (
     <div className="basket-wrapper p-20 max-[1024px]:py-8 max-[1024px]:p-8">
