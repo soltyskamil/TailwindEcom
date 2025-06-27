@@ -81,6 +81,7 @@ export const productsSlice = createSlice({
       state.basket.splice(searchedProductIndex, 1);
     },
     clearBasket: (state) => {
+      //Działa ale nie nasłuchuje zmian
       state.basket = initialState.basket;
     },
   },

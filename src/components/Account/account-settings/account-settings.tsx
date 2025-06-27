@@ -14,11 +14,12 @@ const AccountSettings = () => {
   });
 
   const label = tv({
-    base: "text-[#374151] text-md block mb-1 max-[850px]:text-sm",
+    base: "text-[#374151] text-md block max-[850px]:text-sm",
   });
 
   return (
-    <div className="account-settings">
+    <div className="account-settings p-8 max-[800px]:p-4">
+      <h2 className="text-2xl font-bold mb-8">Zmień swoje hasło</h2>
       <Formik
         initialValues={{
           email: "",
@@ -63,61 +64,76 @@ const AccountSettings = () => {
           isSubmitting,
           /* and other goodies */
         }) => (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2 p-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-0.5">
+            <label htmlFor="email" className={label()}>
+              Twój adres email
+            </label>
             <input
               type="email"
               name="email"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.email}
-              className={input()}
-              placeholder="przykład@gmail.com"
+              className={`${input()} outline-blue-700`}
+              placeholder="example@gmail.com"
             />
             <span className="text-red-500">
               {touched.email && errors.email}
             </span>
+            <label htmlFor="currentPassword" className={label()}>
+              Twoje obecne hasło
+            </label>
+
             <input
               type="password"
               name="currentPassword"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.currentPassword}
-              className={input()}
-              placeholder="Obecne hasło"
+              className={`${input()} outline-blue-700`}
+              placeholder="password..."
             />
             <span className="text-red-500">
               {touched.currentPassword && errors.currentPassword}
             </span>
+            <label htmlFor="newPassword" className={label()}>
+              Nowe hasło
+            </label>
+
             <input
               type="password"
               name="newPassword"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.newPassword}
-              className={input()}
-              placeholder="Nowe hasło"
+              className={`${input()} outline-blue-700`}
+              placeholder="new password..."
             />
             <span className="text-red-500">
               {touched.newPassword && errors.newPassword}
             </span>
+            <label htmlFor="newPasswordConfirm" className={label()}>
+              Potwierdź nowe hasło
+            </label>
+
             <input
               type="password"
               name="newPasswordConfirm"
               onChange={handleChange}
               onBlur={handleBlur}
               value={values.newPasswordConfirm}
-              className={input()}
-              placeholder="Potwierdź nowe hasło.."
+              className={`${input()} outline-blue-700`}
+              placeholder="new password.."
             />
             <span className="text-red-500">
               {touched.newPasswordConfirm && errors.newPasswordConfirm}
             </span>
             <button
               type="submit"
-              className="border p-2 bg-blue-400 rounded-md outline-0  text-white shadow-md cursor-pointer"
+              className="p-2 bg-blue-700 hover:bg-blue-800 active:bg-blue-900 transition duration-300 ease-in-out mt-2 rounded-md  text-white shadow-md cursor-pointer w-max max-[1024px]:w-full"
               disabled={isSubmitting}
             >
-              Submit
+              Potwierdź zmianę hasła
             </button>
           </form>
         )}

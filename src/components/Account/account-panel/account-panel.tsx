@@ -27,7 +27,7 @@ const AccountPanel = ({ name }: AccountPanelProps) => {
 
   return (
     <div className="account-panel-wrapper grid grid-cols-[auto_1fr] max-[1024px]:grid-cols-1">
-      <div className="account-panel w-max p-8 flex flex-col gap-0.5  border-r-2 border-r-neutral-300 max-[1024px]:border-r-0 max-[1024px]:w-full max-[1024px]:text-center">
+      <div className="account-panel w-max p-8 max-[800px]:p-4 flex flex-col gap-0.5  border-r-2 border-r-neutral-300 max-[1024px]:border-r-0 max-[1024px]:w-full max-[1024px]:text-center">
         <h3 className="text-xl">
           Witaj, <span className="font-bold">{name}</span>
         </h3>

@@ -1,7 +1,7 @@
 import React from "react";
 import { Close } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
-import { removeFromBasket } from "../../store/products-reducer";
+import { clearBasket, removeFromBasket } from "../../store/products-reducer";
 import { useHandleItemRemove } from "../../hooks/handle-item-remove";
 import { useSelector } from "react-redux";
 
@@ -49,6 +49,7 @@ const ProductCardBasket = ({
   };
 
   const handleRemoveProduct = () => {
+    dispatch(removeFromBasket({ id }));
     handleItemRemove({ field: "basket", id: id });
   };
 

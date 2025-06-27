@@ -42,12 +42,11 @@ const Order = () => {
       state: products,
     });
     handleUpdateItems("basket-clear", null);
-    handleUpdateItems(
-      "orders",
-      products.map((p: ProductCardData) => {
-        return { ...p, timeStamp: format(new Date(), "yyyy-MM-dd HH:mm:ss") };
-      })
-    );
+    handleUpdateItems("orders", {
+      order: self.crypto.randomUUID(),
+      timeStamp: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+      items: products,
+    });
   };
 
   const input = tv({
