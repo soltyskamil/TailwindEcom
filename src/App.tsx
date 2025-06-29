@@ -23,6 +23,9 @@ import AccountSettings from "./components/Account/account-settings/account-setti
 import Footer from "./components/Footer/footer";
 import Order from "./pages/order/Order";
 import OrderComplete from "./pages/order-complete/order-complete";
+import Explore from "./pages/explore/Explore";
+import Collaborations from "./pages/collaborations/Collaborations";
+import FrequentlyAskedQuestions from "./pages/faq/Faq";
 const Layout = () => {
   return (
     <div className="layout">
@@ -43,6 +46,18 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/explore",
+        element: <Explore />,
+      },
+      {
+        path: "/collaborations",
+        element: <Collaborations />,
+      },
+      {
+        path: "/faq",
+        element: <FrequentlyAskedQuestions />,
       },
       {
         path: "/account",

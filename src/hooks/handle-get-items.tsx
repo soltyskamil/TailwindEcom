@@ -46,6 +46,7 @@ const useHandleGetItems = () => {
       await updateDoc(docRef, {
         basket: arrayUnion(...basket),
       });
+      dispatch(clearBasket());
 
       try {
         const docSnapshot = await getDoc(docRef);

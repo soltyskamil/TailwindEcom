@@ -13,7 +13,7 @@ type useHandleUserSignup = {
   pathname?: string;
 };
 
-export const useHandleUserSignup = ({ pathname }: useHandleUserSignup) => {
+export const useHandleUserSignup = ({ pathname }: useHandleUserSignup = {}) => {
   /**
    *  @param auth[string] - dla autentykacji apki
    * @param login[string] - login użytkownika
@@ -40,41 +40,29 @@ export const useHandleUserSignup = ({ pathname }: useHandleUserSignup) => {
         password
       );
 
-      if (result) {
-        try {
-          const userID = result.user.uid;
+      const userID = result.user.uid;
+      await setDoc(doc(db, "users", userID), {
+        login: login,
+        name: name,
+        surname: surname,
+        password: password,
+        orders: [],
+        basket: [],
+        wishlist: [],
+      }).then(() => {
+        dispatch(setLoggedIn({ login, name, surname }));
+        if (pathname) {
+          navigate(pathname);
+        } else navigate("/");
+      });
 
-          //Setting userdata to firestore
-          await setDoc(doc(db, "users", userID), {
-            login: login,
-            name: name,
-            surname: surname,
-            password: password,
-            orders: [],
-            basket: [],
-            wishlist: [],
-          });
-
-          // .then(() => {
-          //   if (pathname) {
-          //     setTimeout(() => {
-          //       navigate(pathname);
-          //     }, 300);
-          //   } else navigate("/");
-          //   dispatch(setLoggedIn({ login, name, surname }));
-          // });
-
-          addToast(
-            "DEFAULT",
-            "Pomyślnie zarejestrowano",
-            `Witaj ${name}, życzymy miłego korzystania ze sklepu`
-          );
-        } catch (error: any) {
-          addToast("ERROR", "Wystąpił błąd!", error);
-        }
-      }
+      addToast(
+        "DEFAULT",
+        "Pomyślnie zarejestrowano",
+        `Witaj ${name}, życzymy miłego korzystania ze sklepu`
+      );
     } catch (error: any) {
-      addToast("ERROR", "Wystąpił błąd!", error);
+      addToast("ERROR", "Wystąpił błąd!", error.message);
     }
   };
 

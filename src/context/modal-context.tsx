@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-
+import type { PropsWithChildren } from "react";
 type modalProps = {
   modal: {
     [key: string]: any;
@@ -23,9 +23,8 @@ const modal: modalProps = {
 
 export const ModalContext = createContext(modal);
 
-const ContextProvider = ({ children }: any) => {
+const ContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const setModalData = (data: any) => {
-    console.log("debug");
     setModalState((prev) => ({
       ...prev,
       modal: data,

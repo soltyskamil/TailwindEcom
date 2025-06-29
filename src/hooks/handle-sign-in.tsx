@@ -9,7 +9,6 @@ import { setLoggedIn } from "../store/account-reducer";
 import { useNavigate } from "react-router";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../auth/firebase";
-import { useLocation } from "react-router";
 
 type useHandleUserSignInProps = {
   pathname?: string;

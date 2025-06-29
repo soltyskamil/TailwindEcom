@@ -8,8 +8,18 @@ import orderImg from "../../assets/hero-images/hero-images5.webp";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 const OrderComplete = () => {
   const { state } = useLocation();
+  const { products, formValues } = state;
+  const { deliveryOption } = formValues;
+  const deliveryCost =
+    deliveryOption === "standard"
+      ? 15.99
+      : deliveryOption === "express"
+      ? 21.99
+      : 0;
 
-  const itemsPrice = state.reduce((acc: number, curr: ProductCardData) => {
+  console.log(formValues);
+
+  const itemsPrice = products.reduce((acc: number, curr: ProductCardData) => {
     acc += curr.price * curr.quantity;
     return acc;
   }, 0);
@@ -30,7 +40,7 @@ const OrderComplete = () => {
               wyślemy potwierdzenie zamówienia na twój adres email.
             </span>
           </div>
-          {state.map((p: ProductCardData) => {
+          {products.map((p: ProductCardData) => {
             return <ProductOrder {...p} />;
           })}
           <div className="order-completed-right-subtotal border-t-1 border-t-neutral-300 pt-12">
@@ -38,12 +48,14 @@ const OrderComplete = () => {
               <div className="order-completed-right-subtotal-details-total flex justify-between items-center">
                 <span className="text-neutral-700">Wartość przedmiotów:</span>
                 <span className="text-neutral-800 font-bold">
-                  ${itemsPrice}
+                  ${itemsPrice.toFixed(2)}
                 </span>
               </div>
               <div className="order-completed-right-subtotal-details-shipping flex justify-between items-center mb-12">
                 <span className="text-neutral-700">Przesyłka:</span>
-                <span className="text-neutral-800 font-bold">$16.00</span>
+                <span className="text-neutral-800 font-bold">
+                  ${deliveryCost}
+                </span>
               </div>
             </div>
             <div className="order-completed-right-subtotal-full border-b-1 flex justify-between py-12 border-t-1 border-neutral-300">
@@ -51,7 +63,7 @@ const OrderComplete = () => {
                 Cena całkowita:{" "}
               </span>
               <span className="text-neutral-800 font-bold">
-                ${(itemsPrice + 16).toFixed(2)}
+                ${(itemsPrice + deliveryCost).toFixed(2)}
               </span>
             </div>
             <button className="mt-4 ml-auto flex group gap-1 items-center text-blue-600 hover:text-blue-800 cursor-pointer">

@@ -8,20 +8,16 @@ import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import MenuIcon from "@mui/icons-material/Menu";
 const ROUTES = [
   {
-    to: "/new-arrivals",
-    name: "Nowości",
+    to: "/explore",
+    name: "Odkryj inspiracje",
   },
   {
-    to: "/colaborations",
+    to: "/collaborations",
     name: "Kolaboracje",
   },
   {
-    to: "/categories",
-    name: "Kategorie",
-  },
-  {
-    to: "/on-sale",
-    name: "Wyprzedaż",
+    to: "/faq",
+    name: "FAQ",
   },
   {
     to: "/account",
@@ -40,16 +36,24 @@ const ROUTES = [
 const Navbar = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuIconRef = useRef<any | null>(null);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
 
   const handleMenuAnimation = () => {
     if (!menuRef.current || !menuIconRef.current) return;
     window.document.body.classList.toggle("overflow-hidden");
     menuRef.current.classList.toggle("max-[1024px]:left-0");
+    overlayRef.current?.classList.toggle("opacity-75");
     menuIconRef.current.classList.toggle("rotate-90");
   };
 
   return (
-    <div className="wrapper w-full bg-white shadow-2xl">
+    <div className="wrapper w-full bg-white shadow-2xl relative">
+      <div
+        ref={overlayRef}
+        className="overlay bg-black opacity-0 transition duration-300 ease-in-out pointer-events-none w-dvw h-dvh z-99 absolute left-0"
+      >
+        &nbsp;
+      </div>
       <div className=" flex items-center  p-2 max-w-[1440px] w-full m-auto justify-between relative">
         <div className="logo-container h-24 flex">
           <Link to={"/"}>
@@ -58,7 +62,7 @@ const Navbar = () => {
         </div>
         <div
           ref={menuRef}
-          className="wrapper z-100 flex flex-1 max-[1024px]:flex-col max-[1024px]:absolute max-[1024px]:top-0 max max-[1024px]:justify-center max-[1024px]:p-4 max-[1024px]:transition-all max-[1024px]:duration-300 max-[1024px]:ease-in max-[1024px]:-left-100 max-[1024px]:gap-12 max-[1024px]:h-screen max-[1024px]:bg-white max-[1024px]:shadow-2xl "
+          className="wrapper z-100 flex bg-white flex-1 max-[1024px]:flex-col max-[1024px]:absolute max-[1024px]:top-0 max max-[1024px]:justify-center max-[1024px]:p-4 max-[1024px]:transition-all max-[1024px]:duration-300 max-[1024px]:ease-in max-[1024px]:-left-100 max-[1024px]:gap-12 max-[1024px]:h-screen max-[1024px]:bg-white max-[1024px]:shadow-2xl "
         >
           <div className="menu-container flex gap-8 m-auto max-[1024px]:flex-col max-[1024px]:m-0">
             {ROUTES.slice(0, 4).map((route: any, idx: number) => (
