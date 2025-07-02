@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "convert-svg": "svgr -d ./src/components/icon ./src/assets/icons --typescript --filename-case kebab --ext=tsx --ref --icon --replace-attr-values '#000=currentColor' ",

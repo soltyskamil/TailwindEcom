@@ -88,8 +88,8 @@ const Basket = () => {
         </div>
       ) : (
         <div className="basket grid grid-cols-[2fr_1fr] max-[1024px]:grid-cols-1 min-h-dvh gap-16 mt-10">
-          <div className="basket-products border-neutral-300 border-t-1">
-            <div className="products-wrapper grid grid-cols-1 mt-6 gap-2 ">
+          <div className="basket-products border-neutral-300">
+            <div className="products-wrapper grid grid-cols-1 gap-2 ">
               {basket.map((product: any, idx: number) => (
                 <ProductCardBasket {...product} key={idx} />
               ))}

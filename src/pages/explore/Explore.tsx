@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import "./Explore.scss";
 const images = import.meta.glob("/src/assets/hero-images/*.webp");
+import ImageList from "@mui/material/ImageList";
 const imagesAnimated = import.meta.glob("/src/assets/animated/*.jpg");
 import gridImg from "../../assets/animated/grid-img.png";
 import jacketImg from "../../assets/animated/jacket-removed.svg";
@@ -8,45 +9,53 @@ import stockVideo from "../../assets/stock-video.mp4";
 import gsap from "gsap";
 import { useRef } from "react";
 import { Link } from "react-router";
+import { duration } from "@mui/material/styles";
 gsap.registerPlugin(gsap);
+
 const imagePaths = Object.values(imagesAnimated).map(
   (image: any) => image.name
 );
-console.log(imagePaths);
+
 const Explore = () => {
-  let tl = gsap.timeline();
   const graphicRefsFirstChild = useRef<HTMLDivElement>(null);
-  const graphicRefsSecondChild = useRef<HTMLDivElement>(null);
   const oberverRef = useRef<IntersectionObserver | null>(null);
-  const imagesRef = useRef<HTMLImageElement[]>([]);
+  const spanRefs = useRef<HTMLSpanElement[]>([]);
 
-  // useEffect(() => {
-  //   if (!imagesRef.current) return;
+  useEffect(() => {
+    if (!spanRefs.current) return;
 
-  //   imagesRef.current.forEach((img: any, idx: number) => {
-  //     tl.to(img, {
-  //       width: "100%",
-  //       duration: 2,
-  //       delay: 1,
-  //       onComplete: () => {
-  //         tl.repeat(1).yoyo(true);
-  //       },
-  //       // onComplete: () => {
-  //       //   imagesRef.current.reverse().forEach((img: any, idx: number) => {
-  //       //     tl.to(img, {
-  //       //       width: "0%",
-  //       //       duration: 2,
-  //       //       delay: 1,
-  //       //     });
-  //       //   });
-  //       // },
-  //     });
-  //   });
-  // }, [imagesRef]);
+    gsap.fromTo(
+      spanRefs.current[0],
+      {
+        opacity: 0,
+      },
+      {
+        duration: 2,
+        opacity: 1,
+      }
+    );
+
+    spanRefs.current
+      .slice(1, spanRefs.current.length)
+      .forEach((s: any, idx: number) => {
+        gsap.fromTo(
+          s,
+          {
+            opacity: 0.25,
+            x: -10 * idx,
+          },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.5,
+            delay: idx,
+          }
+        );
+      });
+  }, [spanRefs]);
 
   useEffect(() => {
     if (!graphicRefsFirstChild.current || oberverRef.current) return;
-
     oberverRef.current = new IntersectionObserver((entries) => {
       entries.forEach((entry: any) => {
         if (entry.isIntersecting) {
@@ -74,15 +83,18 @@ const Explore = () => {
     });
 
     oberverRef.current.observe(graphicRefsFirstChild.current);
+
     return () => oberverRef.current?.disconnect();
   }, [graphicRefsFirstChild]);
+
+  const string = "odkrywaj";
 
   return (
     <div
       className="
-      my-20
+    my-20
     explore-inspirations
-    min-h-screen
+    max-h-[125vh]
     p-2
     grid
     grid-auto-flow-dense
@@ -94,15 +106,15 @@ const Explore = () => {
     md:grid-rows-3
     xl:grid-cols-6
     xl:gap-8
-    xl:[grid-template-areas:'a_a_b_b_c_c''a_a_b_b_c_c''a_a_b_b_c_c''a_a_b_b_c_c''d_d_b_b_c_c''d_d_b_b_c_c''d_d_b_b_g_g''d_d_e_e_g_g''d_d_e_e_f_f''d_d_e_e_f_f''d_d_e_e_f_f''d_d_e_e_f_f']
+    xl:[grid-template-areas:'a_a_b_b_c_c''a_a_b_b_c_c''a_a_b_b_c_c''a_a_b_b_c_c''a_a_b_b_c_c''a_a_b_b_c_c''a_a_b_b_c_c''d_d_b_b_c_c''d_d_e_e_c_c''d_d_e_e_c_c''d_d_e_e_g_g''d_d_e_e_f_f']
   "
     >
       <div className="flex flex-col justify-center items-center bg-gradient-to-br from-white via-neutral-100 to-neutral-200 rounded-xl shadow-md col-span-1 xl:[grid-area:a] p-6 relative overflow-hidden">
         <div
           ref={graphicRefsFirstChild}
-          className="absolute inset-0 opacity-10 text-[12rem] md:text-[16rem] xl:text-[20rem] font-black text-neutral-300 pointer-events-none flex items-center justify-center select-none"
+          className="absolute inset-0 opacity-10 text-[12rem] md:text-[16rem] xl:text-[20rem] font-black text-black pointer-events-none flex items-center justify-center select-none"
         >
-          Moda
+          : Moda
         </div>
         <div className="relative z-10 flex flex-col gap-2 items-center">
           <h2 className="font-black text-4xl md:text-6xl xl:text-8xl text-neutral-800 tracking-tight">
@@ -122,10 +134,10 @@ const Explore = () => {
       </div>
 
       {/* B */}
-      <div className="relative rounded-xl border-red-300 col-span-1 xl:[grid-area:b] min-h-[200px]">
-        <div className="details absolute bottom-8 md:bottom-12 p-2 md:p-4 w-full flex flex-col gap-2 z-20">
+      <div className="relative rounded-xl col-span-1 xl:[grid-area:b]">
+        <div className="details absolute md:p-4 w-full h-full flex justify-around flex-col gap-2 z-20">
           <span className="text-white text-xs">MUST HAVE</span>
-          <span className="text-2xl md:text-4xl xl:text-5xl text-white font-black">
+          <span className="text-2xl md:text-4xl xl:text-4xl text-white font-black">
             NOWOŚCI WYBRANE DLA CIEBIE
           </span>
           <Link
@@ -174,23 +186,7 @@ const Explore = () => {
             W SPRZEDAŻY
           </span>
         </div>
-        <div className="images-overlay absolute h-full z-10 rounded-xl w-full">
-          {imagePaths.map((img: any, idx: number) => (
-            <img
-              src={img}
-              style={{ width: "0%" }}
-              ref={(el: any) => (imagesRef.current[idx] = el)}
-              className={`object-cover h-full absolute
-              } rounded-xl`}
-            />
-          ))}
-          {/* <img
-            src={imagePaths[0]}
-            alt="img-alt"
-            className="object-cover h-full absolute w-full rounded-xl z-0"
-          /> */}
-          <div className="overlay absolute w-full h-full bg-black opacity-75 z-10 top-0 rounded-xl" />
-        </div>
+        <div className="images-overlay absolute h-full z-10 rounded-xl w-full border" />
       </div>
 
       {/* E */}
@@ -212,10 +208,16 @@ const Explore = () => {
       </div>
 
       {/* G */}
-      <div className="bg-neutral-800 flex justify-center items-center  relative overflow-hidden rounded-xl col-span-1 xl:[grid-area:g] min-h-[200px]">
-        <span className="text-2xl md:text-4xl xl:text-5xl text-white">
-          INSPIRACJE
-        </span>
+      <div className="border border-neutral-200  bg-black g-[url('assets/fashion-team/fashion-team1.jpg')] bg-center bg-cover flex justify-center items-center  relative overflow-hidden rounded-xl col-span-1 xl:[grid-area:g] min-h-[200px]">
+        {string.split("").map((s: any, idx: number) => (
+          <span
+            key={idx}
+            ref={(el: any) => (spanRefs.current[idx] = el)}
+            className="text-white  text-7xl relative uppercase font-black"
+          >
+            {s}
+          </span>
+        ))}
       </div>
     </div>
   );
